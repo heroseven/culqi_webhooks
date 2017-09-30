@@ -45,14 +45,26 @@ def charge():
 @app.route('/webhook/token/creation/succeeded', methods = ['POST'])
 def token_creation_succeeded():
     app.logger.info('response webhook - token creation succeeded >>> %s', charge)
-    return jsonify({'ok': 'ok'})
+    return jsonify({'response': 'token creation succeeded'})
+
+
+@app.route('/webhook/token/creation/failed', methods = ['POST'])
+def token_creation_failed():
+    app.logger.info('response webhook - token creation failed >>> %s', charge)
+    return jsonify({'response': 'token creation failed'})
 
 
 #CHARGE
 @app.route('/webhook/charge/creation/succeeded', methods = ['POST'])
 def charge_creation_succeeded():
     app.logger.info('response webhook - charge creation succeeded >>> %s', charge)
-    return jsonify({'ok': 'ok'})
+    return jsonify({'response': 'charge creation succeeded'})
+
+
+@app.route('/webhook/charge/creation/failed', methods = ['POST'])
+def charge_creation_failed():
+    app.logger.info('response webhook - charge creation failed >>> %s', charge)
+    return jsonify({'response': 'charge creation failed'})
 
 
 if __name__ == "__main__":
