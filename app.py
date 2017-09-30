@@ -41,10 +41,18 @@ def charge():
     return jsonify({'error': 'nopost'})
 
 
-@app.route('/webhook/token/update/succeeded', methods = ['POST'])
-def token_update_succeeded():
-    app.logger.info('response webhook - token update succeeded >>> %s', charge)
-    return ''
+# TOKEN
+@app.route('/webhook/token/creation/succeeded', methods = ['POST'])
+def token_creation_succeeded():
+    app.logger.info('response webhook - token creation succeeded >>> %s', charge)
+    return jsonify({'ok': 'ok'})
+
+
+#CHARGE
+@app.route('/webhook/charge/creation/succeeded', methods = ['POST'])
+def charge_creation_succeeded():
+    app.logger.info('response webhook - charge creation succeeded >>> %s', charge)
+    return jsonify({'ok': 'ok'})
 
 
 if __name__ == "__main__":
