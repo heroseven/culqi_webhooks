@@ -15,7 +15,7 @@ def index():
 
 
 @app.route('/token', methods=['GET'])
-def index():
+def token():
     return render_template('token.html')
 
 
@@ -47,7 +47,7 @@ def charge():
 
 
 @app.route('/tokens', methods=['POST'])
-def charge():
+def tokens():
     if request.method == 'POST':
 
         token = request.form['token']
