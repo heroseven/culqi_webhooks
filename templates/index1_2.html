@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"></meta>
+    <title>Culqi WebHooks</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='waitMe.min.css')}}" />
+</head>
+<body>
+<div class="container">
+    <h1>Mi Tienda</h1>
+    <a id="miBoton" class="btn btn-primary" href="#" >Pagar</a>
+    <br/><br/><br/>
+    <div class="panel panel-default" id="response-panel">
+        <div class="panel-heading">Respuesta</div>
+        <div class="panel-body" id="response">
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://integ-pago.culqi.com/js/v1"></script>
+<script type="text/javascript" src="{{url_for('static', filename='waitMe.min.js')}}"></script>
+<script>
+ $("#response-panel").hide();
+      Culqi.codigoComercio = 'test_gt1rn668pOOK';
+      Culqi.configurar({
+        nombre: 'Mi Comercio',
+        orden: 'x123131',
+        moneda: 'PEN',
+        descripcion: 'Pago de matrícula',
+        monto: 200
+       });
+      $('#miBoton').on('click', function (e) {
+        // Abre el formulario con las opciones de Culqi.configurar
+        Culqi.abrir();
+        e.preventDefault();
+      });
+
+// Recibimos Token del Culqi.js
+        function culqi() {
+          if (Culqi.token) {
+              $(document).ajaxStart(function(){
+                run_waitMe();
+              });
+              // Imprimir Token
+              $.ajax({
+                 type: 'POST',
+                 url: '/cargos',
+                 data: { token: Culqi.token.id },
+                 datatype: 'json',
+                 success: function(data) {
+                   console.log(data)
+                   var result = JSON.parse(JSON.stringify(data));
+                   if(result.objeto == 'error'){
+                       resultdiv(result.mensaje_usuario);
+                   } else {
+                       resultdiv("Venta Exitosa");
+                   }
+                 },
+                 error: function(error) {
+                   resultdiv(error)
+                 }
+              });
+          } else {
+            // Hubo un problema...
+            // Mostramos JSON de objeto error en consola
+            $('#response-panel').show();
+            $('#response').html(Culqi.error.merchant_message);
+            $('body').waitMe('hide');
+          }
+        };
+        function run_waitMe(){
+          $('body').waitMe({
+            effect: 'orbit',
+            text: 'Procesando pago...',
+            bg: 'rgba(255,255,255,0.7)',
+            color:'#28d2c8'
+          });
+        }
+        function resultdiv(message){
+          $('#response-panel').show();
+          $('#response').html(message);
+          $('body').waitMe('hide');
+        }
+</script>
+</body>
+</html>
