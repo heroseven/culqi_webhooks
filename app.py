@@ -126,7 +126,7 @@ def token_creation_succeeded():
 
 # TOKEN
 @app.route('/webhook/token/creation/succeeded/nobody', methods=['POST'])
-def token_creation_succeeded():
+def token_creation_succeeded_nobody():
     return '', 204
 
 @app.route('/webhook/token/expired', methods=['POST'])
