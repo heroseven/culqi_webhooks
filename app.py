@@ -124,6 +124,10 @@ def token_creation_succeeded():
     app.logger.info('response webhook - token creation succeeded >>> %s', request.data)
     return jsonify({'response': 'token creation succeeded'})
 
+# TOKEN
+@app.route('/webhook/token/creation/succeeded/nobody', methods=['POST'])
+def token_creation_succeeded():
+    return '', 204
 
 @app.route('/webhook/token/expired', methods=['POST'])
 def token_expired():
