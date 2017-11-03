@@ -2,15 +2,27 @@ from flask import Flask
 from flask import render_template
 from flask import jsonify
 from flask import request
+from flask_httpauth import HTTPBasicAuth
 import logging
 from logging.handlers import RotatingFileHandler
 import culqipy
 import culqipy1_2
 import uuid
 
-from pip import req
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
+
+users = {
+    "admin": "admin"
+}
+
+
+@auth.get_password
+def get_pw(username):
+    if username in users:
+        return users.get(username)
+    return None
 
 
 @app.route('/', methods=['GET'])
@@ -109,11 +121,19 @@ def creacion_token():
     app.logger.info('response webhook - creacion de token >>> %s', request.data)
     return jsonify({'response': 'creacion de token'})
 
+
 # CARGO
 @app.route('/webhook_1_2/cargo/exitoso', methods=['POST'])
 def cargo_exitoso():
     app.logger.info('response webhook - cargo exitoso >>> %s', request.data)
     return jsonify({'response': 'cargo exitoso'})
+
+
+# AUTORIZACION BASICA
+@app.route('/webhook_1_2/authbasic', methods=['POST'])
+@auth.login_required
+def webhook_bauth_1_2():
+    return  jsonify({'response': "Hello, %s!" % auth.username()})
 
 
 # WEBHOOKS PARA CULQI API V2
@@ -124,10 +144,12 @@ def token_creation_succeeded():
     app.logger.info('response webhook - token creation succeeded >>> %s', request.data)
     return jsonify({'response': 'token creation succeeded'})
 
+
 # TOKEN
 @app.route('/webhook/token/creation/succeeded/nobody', methods=['POST'])
 def token_creation_succeeded_nobody():
     return '', 204
+
 
 @app.route('/webhook/token/expired', methods=['POST'])
 def token_expired():
@@ -152,6 +174,13 @@ def charge_creation_succeeded():
 def charge_creation_failed():
     app.logger.info('response webhook - charge creation failed >>> %s', request.data)
     return jsonify({'response': 'charge creation failed'})
+
+
+# AUTORIZACION BASICA
+@app.route('/webhook_2/authbasic', methods=['POST'])
+@auth.login_required
+def webhook_bauth_2():
+    return  jsonify({'response': "Hello, %s!" % auth.username()})
 
 
 if __name__ == "__main__":
